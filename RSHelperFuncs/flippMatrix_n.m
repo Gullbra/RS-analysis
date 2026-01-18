@@ -7,23 +7,31 @@
 %Date:2012.3.9
 %Modern Information Technology Lab
 %East China University of Science and Technology 
-function [transImage]=flippMatrix_n(orgImage,mask)
-    [row,col]=size(orgImage);
-    orgImage=double(orgImage);
-    [mask_y,mask_x]=size(mask);
-    u=0;
-    for p=1:col
-        if u==mask_x
-            u=0;
+
+
+function [flippedPixels] = flippMatrix_n(orgImage,mask)
+
+    [~, noPixels] = size(orgImage);
+    [~, maskLength] = size(mask);
+
+    flippedPixels = zeros(1, noPixels);
+
+    positionInGroup = 0;
+    for p=1:noPixels
+        if positionInGroup == maskLength
+            positionInGroup = 0;
         end
-        if mask(u+1)==1
-            if mod(orgImage(1,p),2)==0
-                transImage(1,p)=orgImage(1,p)-mask(u+1);
+        
+        if mask(positionInGroup+1) == 1
+            if mod(orgImage(1,p),2) == 0
+                flippedPixels(1,p) = orgImage(1,p) - mask(positionInGroup+1);
             else
-                transImage(1,p)=orgImage(1,p)+mask(u+1);
+                flippedPixels(1,p) = orgImage(1,p) + mask(positionInGroup+1);
             end
         else
-             transImage(1,p)=orgImage(1,p);
+             flippedPixels(1,p) = orgImage(1,p);
         end
-        u=u+1;
+
+        positionInGroup = positionInGroup+1;
     end
+end

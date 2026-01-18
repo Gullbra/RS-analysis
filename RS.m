@@ -5,9 +5,6 @@
 %Modern Information Technology Lab
 %East China University of Science and Technology 
 
-% clc
-% clear
-
 
 function [ ...
     p, ...
@@ -20,7 +17,7 @@ function [ ...
     r_inv_nM, ...
     s_inv_nM ...
 ] = RS(pathToImage)
-    % Converted to function to expose results with "MATLAB Engine API for Python"
+    % Converted to function in order to expose the results to python
     %
     % Remember to convert the path to str on the python side
 
@@ -29,31 +26,41 @@ function [ ...
     end
 
     addpath('./RSHelperFuncs');
-
-    % if ~isstring(pathToImage)
-    %     % When MATLAB trows an error, the python side receives an
-    %     % MatlabExecutionError error
-    %     error('pathToImage must be a string');
-    % end
+    addpath('./ImageProcessing')
 
     mask=[1 0 1 0 1];
-    pixelMatrix = processImage(pathToImage);
+    [~, maskLength] = size(mask);
+
+    pixelMatrixOriginal = processImage(pathToImage);
+    pixelMatrixInverted = flippMatrix_p(pixelMatrixOriginal, ones(1, maskLength));
 
     % original img
-    [r,s,u] = countGroups_pM(pixelMatrix, mask);
+    [r,s,u] = betterCountGroups(...
+        pixelMatrixOriginal, ...
+        flippMatrix_p(pixelMatrixOriginal, mask), ...
+        maskLength);
     r_pM = r/(r+s+u);
     s_pM = s/(r+s+u);
 
-    [r,s,u] = countGroups_nM(pixelMatrix, mask);
+    [r,s,u] = betterCountGroups(...
+        pixelMatrixOriginal, ...
+        flippMatrix_n(pixelMatrixOriginal, mask), ...
+        maskLength);
     r_nM = r/(r+s+u);
     s_nM = s/(r+s+u);
 
     % inverted img
-    [r,s,u] = countGroups_inv_pM(pixelMatrix, mask);
+    [r,s,u] = betterCountGroups(...
+        pixelMatrixInverted, ...
+        flippMatrix_p(pixelMatrixInverted, mask), ...
+        maskLength);
     r_inv_pM = r/(r+s+u);
     s_inv_pM = s/(r+s+u);
 
-    [r,s,u] = countGroups_inv_nM(pixelMatrix, mask);
+    [r,s,u] = betterCountGroups(...
+        pixelMatrixInverted, ...
+        flippMatrix_n(pixelMatrixInverted, mask), ...
+        maskLength);
     r_inv_nM = r/(r+s+u);
     s_inv_nM = s/(r+s+u);
 
@@ -62,21 +69,8 @@ function [ ...
     d1=r_inv_pM-s_inv_pM;
     dn0=r_nM-s_nM;
     dn1=r_inv_nM-s_inv_nM;
-    
-    a=2*(d0+d1);
-    b=(dn0-dn1-d1-d0*3);
-    c=d0-dn0;
 
-    % z=[-1:0.01:2];
-    p=[a b c];
-
-    rootans=roots(p);
-    % if abs(rootans(1,1))>abs(rootans(2,1))
-    %     finalans=rootans(2,1);
-    % else
-    %     finalans=rootans(1,1);
-    % end
-    % p=finalans/(finalans-0.5);
+    rootans = roots([ 2*(d0+d1) dn0-dn1-d1-d0*3 d0-dn0 ]);
 
     if length(rootans) >= 2
         if abs(rootans(1,1))>abs(rootans(2,1))

@@ -5,27 +5,47 @@
 %Modern Information Technology Lab
 %East China University of Science and Technology
 
-function computeAndPlot(imgPath1, imgPath2)
-    [width, height] = size(imread(imgPath1));
+function computeAndPlot(pathToImage)
+
+    arguments
+        pathToImage string
+    end
+
+    addpath('./LSBEmbedd')
+    addpath('./ImageProcessing')
+
+    tempStego = "./images/tempStego.png";
+
+    [width, height] = size(imread(pathToImage));
     pixelAmount = width * height;
     numIterations = height + 1;
     
     % Preallocate result arrays
     pValues = zeros(1, numIterations);
+    
     r_pM = zeros(1, numIterations);
     s_pM = zeros(1, numIterations);
+
     r_nM = zeros(1, numIterations);
     s_nM = zeros(1, numIterations);
+
     r_inv_pM = zeros(1, numIterations);
     s_inv_pM = zeros(1, numIterations);
+
     r_inv_nM = zeros(1, numIterations);
     s_inv_nM = zeros(1, numIterations);
 
     % Embed data and compute RS values
+    fprintf('Embedding and analysing...\n');
     imageIndex=1;
     for pixelIndex=0:width:pixelAmount
 
-        bitlsbhide(imgPath1, pixelIndex, imgPath2);
+        if mod(imageIndex, 50) == 0  % Print every 10 iterations
+            fprintf('  Progress: %d/%d (%.1f%%)\n', imageIndex, numIterations, ...
+                    100*imageIndex/numIterations);
+        end
+
+        bitlsbhide(pathToImage, pixelIndex, tempStego);
         [ ...
             pValues(1,imageIndex), ...
             r_pM(1,imageIndex), ...
@@ -36,20 +56,21 @@ function computeAndPlot(imgPath1, imgPath2)
             s_inv_pM(1,imageIndex), ...
             r_inv_nM(1,imageIndex), ...
             s_inv_nM(1,imageIndex) ...
-        ] = RS(imgPath2);
+        ] = RS(tempStego);
 
         imageIndex=imageIndex+1;
     end
+    delete(tempStego);
+    fprintf('Analysis complete!\n');
     
     a=[r_nM, fliplr(r_inv_nM)];
     b=[r_pM, fliplr(r_inv_pM)];
     c=[s_pM, fliplr(s_inv_pM)];
     d=[s_nM, fliplr(s_inv_nM)];
     
-    % Create x-axis values based on actual number of iterations
-    x_axis1 = linspace(0, 1, length(a));  % For subplot 1
-    x_axis2 = linspace(0, 1, length(pValues));  % For subplot 2
+    fprintf('Generating plots...\n');
     
+    fig = figure('Visible', 'off');
     subplot(121);
     
     titleString1 = 'RS Analysis Plot';
@@ -60,6 +81,8 @@ function computeAndPlot(imgPath1, imgPath2)
     xLabelString2 = 'Embedding Rate';
     yLabelString2 = 'Estimated Embedding Rate';
     
+    x_axis1 = linspace(0, 1, length(a));
+    x_axis2 = linspace(0, 1, length(pValues));
     plot(x_axis1, a); hold on; grid on;
     plot(x_axis1, b);
     plot(x_axis1, c);
@@ -78,4 +101,8 @@ function computeAndPlot(imgPath1, imgPath2)
     title(titleString2);
     xlabel(xLabelString2);
     ylabel(yLabelString2);
+
+    savefig(fig, './images/RS_analysis_results.fig');
+    exportgraphics(fig, './images/RS_analysis_results.jpg', 'Resolution', 1024);
+    close(fig);
 end

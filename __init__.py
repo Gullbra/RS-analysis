@@ -1,1 +1,2 @@
 from bridge_to_py import run_rs_analysis_on_img
+from bridge_to_py import plot_rs_analysis_on_img

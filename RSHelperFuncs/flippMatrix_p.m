@@ -6,24 +6,32 @@
 %E-mail:matthewgao@gmail.com
 %Date:2012.3.9
 %Modern Information Technology Lab
-%East China University of Science and Technology 
-function [transImage]=flippMatrix_p(orgImage,mask)
-[row,col]=size(orgImage);
-orgImage=double(orgImage);
-[mask_y,mask_x]=size(mask);
-u=0;
-for p=1:col
-    if u==mask_x
-        u=0;
-    end
-    if mask(u+1)==1
-        if mod(orgImage(1,p),2)==0
-            transImage(1,p)=orgImage(1,p)+mask(u+1);
-        else
-            transImage(1,p)=orgImage(1,p)-mask(u+1);
+%East China University of Science and Technology
+
+
+function [flippedPixels] = flippMatrix_p(originalPixels, mask)
+
+    [~, noPixels] = size(originalPixels);
+    [~, maskLength] = size(mask);
+
+    flippedPixels = zeros(1, noPixels);
+
+    positionInGroup = 0;
+    for p=1:noPixels
+        if positionInGroup == maskLength
+            positionInGroup = 0;
         end
-    else
-         transImage(1,p)=orgImage(1,p);
+
+        if mask(positionInGroup+1) == 1
+            if mod(originalPixels(1,p),2) == 0
+                flippedPixels(1,p) = originalPixels(1,p) + mask(positionInGroup+1);
+            else
+                flippedPixels(1,p) = originalPixels(1,p) - mask(positionInGroup+1);
+            end
+        else
+             flippedPixels(1,p) = originalPixels(1,p);
+        end
+
+        positionInGroup = positionInGroup+1;
     end
-    u=u+1;
 end

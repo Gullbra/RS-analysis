@@ -11,12 +11,6 @@ def test_matlab_connection():
   print(f"Square root of 16 is: {result}")
 
 
-def test_matlab_func():
-  print("Testing custom MATLAB function...")
-  result = eng.testFunc(5, 4)
-  print(f"Result: {result}")
-
-
 def run_rs_analysis_on_img(path_to_img: Path, verbose = False):
   result = eng.RS(str(path_to_img.resolve()))
   if verbose:
@@ -24,11 +18,17 @@ def run_rs_analysis_on_img(path_to_img: Path, verbose = False):
   return result
 
 
+def plot_rs_analysis_on_img(path_to_img: Path):
+  eng.computeAndPlot(str(path_to_img.resolve()), nargout=0)
+
 if __name__ == "__main__":
   # test_matlab_connection()
-  # test_matlab_func()
   
-  run_rs_analysis_on_img(
-    Path("C:\\Users\\Martin\\Code\\ThesisWork\\steganalysis\\1_cover.png"),
-    True
+  # run_rs_analysis_on_img(
+  #   Path(__file__).parent / "images" / "1_stego.png",
+  #   True
+  # )
+
+  plot_rs_analysis_on_img(
+    Path(__file__).parent / "images" / "1_cover.png"
   )

@@ -3,10 +3,6 @@ function [pixelMatrix] = processImage(pathToImage)
     arguments (Input)
         pathToImage string
     end
-    
-    % arguments (Output)
-    % 
-    % end
 
     % Convert to matrix of pixel values
     pixelMatrix = imread(pathToImage);
