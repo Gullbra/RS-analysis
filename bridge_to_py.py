@@ -4,6 +4,7 @@ from pathlib import Path
 eng = matlab.engine.start_matlab()
 print("Matlab engine running!\n")
 
+
 def test_matlab_connection():
   print("Testing MATLAB connection...")
   result = eng.sqrt(16.0)

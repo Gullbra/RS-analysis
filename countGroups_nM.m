@@ -7,15 +7,12 @@
 %Date:2012.3.9
 %Modern Information Technology Lab
 %East China University of Science and Technology 
-function [r,s,u]=ncompare(input,mask)
-    orgImage=imread(input);
-    orgImage=orgImage(:,:,1);
-    orgImage=double(orgImage);
-    orgImage=zigzag(orgImage);
-    a=nftrans(orgImage,mask);
+function [r,s,u] = countGroups_nM(pixelMatrix, mask)
+    
+    a=flippMatrix_n(pixelMatrix,mask);
     [mask_y,mask_x]=size(mask);
-    x=relation(a,mask_x);
-    b=relation(orgImage,mask_x);
+    x=discriminationFunction(a,mask_x);
+    b=discriminationFunction(pixelMatrix,mask_x);
     r=0;
     s=0;
     u=0;

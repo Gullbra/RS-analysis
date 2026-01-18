@@ -5,7 +5,7 @@
 %Modern Information Technology Lab
 %East China University of Science and Technology
 
-function plot_for_img(imgPath1, imgPath2)
+function plot_for_img(pathToInputImg, pathToOutputImg)
     [width, height] = size(imread(pathToInputImg));
     pixelAmount = width * height;
 
@@ -14,8 +14,8 @@ function plot_for_img(imgPath1, imgPath2)
     for i=0:width:pixelAmount
         %randbitlsbhide('f:\lenna.bmp',i,'f:\lennahided.bmp',1234);
         
-        % imgPath1 = 'C:\\Users\\Martin\\Code\\ThesisWork\\steganalysis\\1_cover.png';
-        % imgPath2 = '.\test_pic.png';
+        imgPath1 = 'C:\\Users\\Martin\\Code\\ThesisWork\\steganalysis\\1_cover.png';
+        imgPath2 = '.\test_pic.png';
         
         bitlsbhide(imgPath1, i, imgPath2); % Do LSB embed.
         

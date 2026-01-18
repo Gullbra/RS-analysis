@@ -25,33 +25,39 @@ function result = RS(pathToImage)
     % end
 
     mask=[1 0 1 0 1];
+    pixelMatrix = processImage(pathToImage);
 
-    outputfile=pathToImage;
+    % original img
+    [r,s,u] = countGroups_pM(pixelMatrix, mask);
+    r_pM = r/(r+s+u);
+    s_pM = s/(r+s+u);
 
-    [r,s,u]=compare(outputfile,mask);
-    rplus=r/(r+s+u);
-    splus=s/(r+s+u);
-    [r,s,u]=ncompare(outputfile,mask);
-    rmins=r/(r+s+u);
-    smins=s/(r+s+u);
+    [r,s,u] = countGroups_nM(pixelMatrix, mask);
+    r_nM = r/(r+s+u);
+    s_nM = s/(r+s+u);
 
-    [r,s,u]=compare2(outputfile,mask);
-    rplus2=r/(r+s+u);
-    splus2=s/(r+s+u);
-    [r,s,u]=ncompare2(outputfile,mask);
-    rmins2=r/(r+s+u);
-    smins2=s/(r+s+u);
+    % inverted img
+    [r,s,u] = countGroups_inv_pM(pixelMatrix, mask);
+    r_inv_pM = r/(r+s+u);
+    s_inv_pM = s/(r+s+u);
 
-    d0=rplus-splus;
-    d1=rplus2-splus2;
-    dn0=rmins-smins;
-    dn1=rmins2-smins2;
+    [r,s,u] = countGroups_inv_nM(pixelMatrix, mask);
+    r_inv_nM = r/(r+s+u);
+    s_inv_nM = s/(r+s+u);
+
+    % Result calculation
+    d0=r_pM-s_pM;
+    d1=r_inv_pM-s_inv_pM;
+    dn0=r_nM-s_nM;
+    dn1=r_inv_nM-s_inv_nM;
     
     a=2*(d0+d1);
     b=(dn0-dn1-d1-d0*3);
     c=d0-dn0;
+
     z=[-1:0.01:2];
     p=[a b c];
+
     rootans=roots(p);
     if abs(rootans(1,1))>abs(rootans(2,1))
         finalans=rootans(2,1);

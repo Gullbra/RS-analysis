@@ -9,7 +9,7 @@
 % June 2007
 % alex.nickel@gmail.com
 
-function output = zigzag(in)
+function output = zigzagOrdering(in)
 
 % initializing the variables
 %----------------------------------

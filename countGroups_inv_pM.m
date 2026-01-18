@@ -1,5 +1,5 @@
-%function [r,s,u]=compare(input,mask)
-%function ---calculate R S U group using F1 function
+%function [r,s,u]=compare2(input,mask)
+%function ---calculate R S U another group using F1 function
 %input ---input file
 %mask ---mask
 %Author:Gaoshen
@@ -7,15 +7,13 @@
 %Date:2012.3.9
 %Modern Information Technology Lab
 %East China University of Science and Technology 
-function [r,s,u]=compare(input,mask)
-    orgImage=imread(input);
-    orgImage=orgImage(:,:,1);
-    orgImage=double(orgImage);
-    orgImage=zigzag(orgImage);
-    a=ftrans(orgImage,mask);
+function [r,s,u] = countGroups_inv_pM(pixelMatrix,mask)
     [mask_y,mask_x]=size(mask);
-    x=relation(a,mask_x);
-    b=relation(orgImage,mask_x);
+    a=flippMatrix_p(pixelMatrix,ones(1,mask_x));
+    h=a;
+    a=flippMatrix_p(a,mask);
+    x=discriminationFunction(a,mask_x);
+    b=discriminationFunction(h,mask_x);
     r=0;
     s=0;
     u=0;
@@ -31,5 +29,5 @@ function [r,s,u]=compare(input,mask)
             end
         end
     end
-
+end
         

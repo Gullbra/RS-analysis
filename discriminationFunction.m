@@ -1,4 +1,4 @@
-function [x]=relation(a,interval)
+function [x]=discriminationFunction(a,interval)
 [row,col]=size(a);
 sum=0;
 u=1;

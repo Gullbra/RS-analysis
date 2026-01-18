@@ -7,7 +7,7 @@
 %Date:2012.3.9
 %Modern Information Technology Lab
 %East China University of Science and Technology 
-function [transImage]=nftrans(orgImage,mask)
+function [transImage]=flippMatrix_n(orgImage,mask)
     [row,col]=size(orgImage);
     orgImage=double(orgImage);
     [mask_y,mask_x]=size(mask);
