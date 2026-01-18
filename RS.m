@@ -9,7 +9,17 @@
 % clear
 
 
-function result = RS(pathToImage)
+function [ ...
+    p, ...
+    r_pM, ...
+    s_pM, ...
+    r_nM, ...
+    s_nM, ...
+    r_inv_pM, ...
+    s_inv_pM, ...
+    r_inv_nM, ...
+    s_inv_nM ...
+] = RS(pathToImage)
     % Converted to function to expose results with "MATLAB Engine API for Python"
     %
     % Remember to convert the path to str on the python side
@@ -17,6 +27,8 @@ function result = RS(pathToImage)
     arguments
         pathToImage string
     end
+
+    addpath('./RSHelperFuncs');
 
     % if ~isstring(pathToImage)
     %     % When MATLAB trows an error, the python side receives an
@@ -55,16 +67,30 @@ function result = RS(pathToImage)
     b=(dn0-dn1-d1-d0*3);
     c=d0-dn0;
 
-    z=[-1:0.01:2];
+    % z=[-1:0.01:2];
     p=[a b c];
 
     rootans=roots(p);
-    if abs(rootans(1,1))>abs(rootans(2,1))
-        finalans=rootans(2,1);
-    else
-        finalans=rootans(1,1);
-    end
-    p=finalans/(finalans-0.5);
+    % if abs(rootans(1,1))>abs(rootans(2,1))
+    %     finalans=rootans(2,1);
+    % else
+    %     finalans=rootans(1,1);
+    % end
+    % p=finalans/(finalans-0.5);
 
-    result = p;
+    if length(rootans) >= 2
+        if abs(rootans(1,1))>abs(rootans(2,1))
+            finalans=rootans(2,1);
+        else
+            finalans=rootans(1,1);
+        end
+        p = finalans/(finalans-0.5);
+    elseif isscalar(rootans)
+        % Linear case: only one root
+        finalans = rootans(1,1);
+        p = finalans/(finalans-0.5);
+    else
+        % No roots (shouldn't happen, but safe fallback)
+        p = NaN;
+    end
 end

@@ -7,6 +7,7 @@
 %Date:2012.3.9
 %Modern Information Technology Lab
 %East China University of Science and Technology 
+
 function [r,s,u] = countGroups_inv_nM(pixelMatrix, mask)
     [mask_y,mask_x]=size(mask);
     a=flippMatrix_p(pixelMatrix,ones(1,mask_x));
