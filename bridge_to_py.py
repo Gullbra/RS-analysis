@@ -33,6 +33,10 @@ def analyze_images_to_csv(
 ):
     """
     Analyze multiple images and save results to CSV.
+
+    INSTRUCTIONS:
+    - Ensure images are named according to the filename_template, e.g., "stego{}.png"
+    - create a folder "stegoimages" in same directory as this script.
     
     important variables:
         start_num: Starting number for image filenames
