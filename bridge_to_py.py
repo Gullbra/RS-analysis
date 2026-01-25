@@ -34,7 +34,7 @@ def analyze_images_to_csv(
     """
     Analyze multiple images and save results to CSV.
     
-    Args:
+    important variables:
         start_num: Starting number for image filenames
         end_num: Ending number (inclusive) for image filenames
         filename_template: Template string with {} for the number, e.g., "{}_stego.png"
@@ -42,7 +42,8 @@ def analyze_images_to_csv(
         verbose: Whether to print progress
     """
     results = []
-    images_dir = Path(__file__).parent / "images"
+    # name of the folder containing the images, assumed to be in the same directory as this script
+    images_dir = Path(__file__).parent / "stegoimages"
     
     for i in range(start_num, end_num + 1):
         filename = filename_template.format(i)
@@ -68,7 +69,7 @@ def analyze_images_to_csv(
                 "rs_result": "ERROR"
             })
     
-    # Write results to CSV
+    # results to CSV
     with open(output_csv, "w", newline="") as csvfile:
         fieldnames = ["image_number", "filename", "rs_result"]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -81,11 +82,11 @@ def analyze_images_to_csv(
 
 
 if __name__ == "__main__":
-    # Analyze images 1 through 10 (adjust range as needed)
+    # change start_num=1, end_num=200, 
     analyze_images_to_csv(
         start_num=1,
-        end_num=10,                      # Change this to your last image number
-        filename_template="{}_stego.png", # Change if your naming is different
+        end_num=200,                      # change this to your last image number
+        filename_template="stego{}.png", # change if your naming is different
         output_csv="rs_analysis_results.csv",
         verbose=True
     )
